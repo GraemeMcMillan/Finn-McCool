@@ -1,18 +1,14 @@
-"""Use the SCO xlsx file to load a data frame into pandas
-Courtesy of footbal-data.com"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue May 258 01:34:40 2019
 
+@author: finnmccool
+"""
 import os
 
 import pandas as pd
 from pandas import ExcelWriter
-
-input_file = 'SCOFinal.xlsx'
-
-# Create a data frame for the imput file
-df = pd.read_excel(input_file)
-
-# Define a variable for the column headings
-Labels = [df.columns]
 
 
 def start_prog_info():
@@ -26,15 +22,24 @@ def start_prog_info():
     print('* A file called SCOFinal(team name).xlsx will be written. If you want!     *')
     print('****************************************************************************')
     print('\n\n')
-    
-def get_file():
-    print('Is your file here?')
-    print(os.listdir())
-    checkfile = str(input('Enter file name to convert..> '))
-    if os.path.exists(checkfile):
-        print('File Name OK')
-    else:
-        print('File does not exisit')
+
+
+def get_input_file():
+    """Ask for the Input File name"""
+    print('Is your xlsx file listed here?')
+    T_files = os.listdir()
+    my_files = [f for f in T_files if f.endswith('.' + 'xlsx')]
+    for i in range(len(my_files)):
+        print(i, ' ', my_files[i])
+    checkfile = int(input('Enter number of the file to convert..> '))
+    print('\nYou have chosen ', my_files[checkfile], '\n')
+    return my_files[checkfile]
+
+
+def get_df(file):
+    """Create a Data Frame from the input file"""
+    dframe = pd.read_excel(file)
+    return dframe
 
 
 def get_teams():
@@ -50,7 +55,7 @@ def get_team_name():
     print('The list of teams is:  ')
     x = get_teams()
     for i in range(len(x)):
-        print('Team ',i,' is ',x[i])
+        print('Team ', i, ' is ', x[i])
 
     while True:
         Team = str(input('Enter your team name ..> '))
@@ -61,32 +66,35 @@ def get_team_name():
 
 
 def get_games(Team):
-    """This ugly but the games are organised H and A"""
+    """This ugly but the games are organised Home and Away"""
     temp = df[df.HomeTeam == Team]
     temp1 = df[df.AwayTeam == Team]
     TeamStats = pd.concat([temp, temp1])
+    TeamStats = TeamStats.sort_values(by=['Date'])
+
     return TeamStats
 
 
-def write_output_file():
+def write_output_file(file):
     """Write the data out to the original file with the team name as a new sheet"""
-    output_file = input_file[:-5]+Team + '.xlsx'
-    writer = ExcelWriter(output_file)
-    TeamStats.to_excel(writer, sheet_name=Team, index=False)
-    writer.save()
+    output_file = file[:-5]+Team + '.xlsx'
+    teamstats_file = ExcelWriter(output_file)
+    TeamStats.to_excel(teamstats_file, sheet_name=Team, index=False)
+    teamstats_file.save()
 
 
-def create_excel_file():
+def create_excel_file(file):
     """WIll create an excel file based on your team choice"""
     write_excel_file = input(
         'Do you want to write the out put to an Excel file? y(Y) or n(N)...>')
     if write_excel_file in {'Y', 'y'}:
-        write_output_file()
+        write_output_file(file)
 
 
-"""This is the Main Programme"""
+"""Main Loop"""
 start_prog_info()
-get_file()
+input_file = get_input_file()
+df = get_df(input_file)
 Team = get_team_name()
 TeamStats = get_games(Team)
-create_excel_file()
+create_excel_file(input_file)
