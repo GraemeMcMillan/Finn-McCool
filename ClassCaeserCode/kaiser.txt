@@ -1,0 +1,32 @@
+Let's get down to business. You are looking for a Python solution to generate a Caeser Code. It is the simplest of cyphers. The great grand daddy of cryptography and here it is:
+
+1 def caesar_code(message, key):
+2    message = str(message)
+3    key = int(key)
+4    alphabet1 = ''.join(chr(x) for x in range(32, 127))
+5    alphabet2 = alphabet1[key:]+alphabet1[:key]
+6    coded_message = ''
+7    for i in range(len(message)):
+8        x = alphabet1.find(message[i])
+9        coded_message += (alphabet2[x])
+10    print(coded_message)
+
+Or at least, my version of it!
+
+It is a funtion which takes as arguments, the message to be encoded and the key (an integer) to offset the letter in the message by.
+
+That is. If the message is 'aaa' and the key is 1. The encoded message will be 'bbb' Simples.
+
+You can get these data from the user by simple terminal Python code such as:
+1 message = str(input('Enter your message...'))
+2 key     = integer(input('Enter an integer number to encode the message...')
+
+In line 4, we use all the UTF characters between 32 and 127 to create an alphabet. We join all the characters to create a string which we can find our message characters in. 'a' is 6
+1 for instance.
+Line 5 creates a second alphabet using string slicing. alphabet1[key:] returns evry character after the integer, key'
+alphabet1[:key] returns all characters up to key.
+As an example with alphabet1 being a 'a..z' and the key being 2 we would get 'c..z' and 'ab'.
+Concatenate these two strings to give alphabet2. We get: 'cdefghijklmnopqrstuvwxyzab'.
+Line 6 just sets a variable, coded_message, as an empty string we can append to.
+Line 7 starts a 'for' loop with a range of the length of the message and finds the integer location of the character in our message in alphabet1. i.e. 'a' = 1. This letter, with a key of 2 would give the location of 'a' as character 1 of alphabet2. Which is 'c'. And so on until our message has been encoded.
+Line 10 just prints the coded_message variable.
